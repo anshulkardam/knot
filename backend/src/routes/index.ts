@@ -3,6 +3,7 @@ import { authRoutes } from './auth.js';
 import { userRoutes } from './user.js';
 import { linkRoutes } from './link.js';
 import { getLinkStats } from '../controllers/getLinkStats.js';
+import { getQr } from '../controllers/getQR.js';
 
 export const v1Routes = async (fastify: FastifyInstance) => {
   fastify.get('/', (_req, res) => {
@@ -21,4 +22,7 @@ export const v1Routes = async (fastify: FastifyInstance) => {
   fastify.register(linkRoutes, { prefix: '/link' });
 
   fastify.get('/stats/:code', getLinkStats);
+
+  fastify.get('/qr/:code', getQr);
+
 };

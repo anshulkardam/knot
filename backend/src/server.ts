@@ -53,9 +53,11 @@ start();
 const serverTermination = async (signal: NodeJS.Signals): Promise<void> => {
   try {
     logger.info('SERVER SHUTDOWN', signal);
-    await redis.quit();
-    await disconnectDatabase();
     await app.close();
+    if (redis.isOpen) {
+      await redis.quit();
+    }
+    await disconnectDatabase();
     logtail.flush();
     process.exit(0);
   } catch (err) {
