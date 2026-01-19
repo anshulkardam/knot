@@ -1,17 +1,27 @@
-import config from '@/config';
+import type { FastifyCorsOptions } from '@fastify/cors';
+import config from '../config/index.js';
 
-import type { CorsOptions } from 'cors';
-
-const CorsOptions: CorsOptions = {
-  origin(requestOrigin, callback) {
-    if (requestOrigin && config.CORS_WHITELIST.includes(requestOrigin)) {
+const corsOptions: FastifyCorsOptions = {
+  origin: (origin, callback) => {
+    // allow non-browser requests (curl, mobile apps, server-to-server)
+    if (!origin) {
       callback(null, true);
-    } else {
-      callback(
-        config.NODE_ENV === 'development' ? null : new Error('Not Allowed by CORS')
-      );
+      return;
     }
+
+    if (config.CORS_WHITELIST.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    if (config.NODE_ENV === 'development') {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Not allowed by CORS'), false);
   },
+  credentials: true,
 };
 
-export default CorsOptions;
+export default corsOptions;

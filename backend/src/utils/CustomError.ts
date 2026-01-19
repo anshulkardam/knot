@@ -1,5 +1,5 @@
-import { logger } from '@/lib/winston';
-import { NextFunction, Request, Response } from 'express';
+import { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
+import { logger } from '../lib/winston.js';
 
 export class CustomError extends Error {
   public statusCode: number;
@@ -13,7 +13,7 @@ export class CustomError extends Error {
     statusCode: number,
     type: string,
     details?: string,
-    path?: string
+    path?: string,
   ) {
     super(message);
     this.statusCode = statusCode;
@@ -27,15 +27,15 @@ export class CustomError extends Error {
   }
 }
 
-export const ErrorHandler = (
-  err: CustomError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  logger.error('Error common handler', err);
-  res.status(err.statusCode ?? 500).json({
-    status: 'error',
-    message: err.message ?? 'Internal Server Error',
+export function ErrorHandler(
+  error: FastifyError,
+  _request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const statusCode = error.statusCode ?? 500;
+  logger.error('Error common handler', error);
+  reply.status(statusCode).send({
+    status: "error",
+    message: error.message,
   });
-};
+}

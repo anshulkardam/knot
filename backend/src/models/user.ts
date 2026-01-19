@@ -7,58 +7,49 @@ export type IUser = {
   password: string;
   role: 'user' | 'admin';
   totalVisitCount: number;
-  passwordResetToken: string | null;
-  refreshToken: string | null;
+  // passwordResetToken: string | null;
 };
 
 const userSchema = new Schema<IUser>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true },
+
     email: {
       type: String,
       required: true,
       unique: true,
+      index: true,
     },
+
     password: {
       type: String,
       required: true,
       select: false,
     },
+
     role: {
       type: String,
+      enum: ['user', 'admin'],
       required: true,
-      enum: {
-        values: ['user', 'admin'],
-        message: '`{VALUE}` is not supported',
-      },
     },
+
     totalVisitCount: {
       type: Number,
       default: 0,
     },
-    passwordResetToken: {
-      type: String,
-      default: null,
-      select: false,
-    },
+
+    // passwordResetToken: {
+    //   type: String,
+    //   default: null,
+    //   select: false,
+    // },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true },
 );
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    next();
-    return;
-  }
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
-const User = model<IUser>('User', userSchema);
-
-export default User;
+export default model<IUser>('User', userSchema);

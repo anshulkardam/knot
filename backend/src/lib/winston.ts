@@ -1,7 +1,7 @@
 import { createLogger, format, transports, transport } from 'winston';
 import { Logtail } from '@logtail/node';
 import { LogtailTransport } from '@logtail/winston';
-import config from '@/config';
+import config from '../config/index.js';
 
 const transportation: transport[] = [];
 
@@ -24,7 +24,7 @@ if (config.NODE_ENV === 'development') {
     new transports.Console({
       format: combine(
         colorize({ all: true }),
-        label({ label: `${config.NODE_ENV.toUpperCase()}-SERVER` }),
+        label({ label: `${config.NODE_ENV.toUpperCase()}` }),
         timestamp({ format: 'DD MMMM hh:mm:ss A' }),
         metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
         printf(({ level, label, message, timestamp, metadata }) => {
@@ -34,9 +34,9 @@ if (config.NODE_ENV === 'development') {
               : '';
 
           return `${timestamp} [${label}] [${level}]: ${message} ${metaStr}`;
-        })
+        }),
       ),
-    })
+    }),
   );
 }
 

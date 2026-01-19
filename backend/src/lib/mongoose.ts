@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import config from '@/config';
+
 import type { ConnectOptions } from 'mongoose';
-import { logger } from './winston';
+import config from '../config/index.js';
+import { logger } from './winston.js';
 
 const connectionOptions: ConnectOptions = {
   serverApi: {

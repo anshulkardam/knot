@@ -1,43 +1,20 @@
 {
   "compilerOptions": {
-    // File Layout
     "rootDir": "src",
     "outDir": "dist",
 
-    // Environment Settings
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "target": "ES2022",
     "lib": ["ES2022"],
-    //"types": ["node"],
 
-    // Output
+    "strict": true,
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true,
 
-    // Type Checking
-    "strict": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": false,
-    "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
-    "removeComments": true,
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "typeRoots": ["./src/@types"],
-    // Module Handling
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-
-    // Project Behavior
-    "isolatedModules": true,
-    "moduleDetection": "force"
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

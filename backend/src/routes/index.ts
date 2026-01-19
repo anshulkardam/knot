@@ -1,15 +1,25 @@
-import { Router } from 'express';
+import { FastifyInstance } from 'fastify';
+import { authRoutes } from './auth.js';
+import { userRoutes } from './user.js';
+import { linkRoutes } from './link.js';
+import { redirectRoutes } from './redirect.js';
 
-const router: Router = Router();
 
-router.get('/', (req, res) => {
-  return res.status(200).json({
-    message: 'API is live',
-    status: 'ok',
-    version: '1.0.0',
-    docs: '',
-    timestamp: new Date().toISOString(),
+export const v1Routes = async (fastify: FastifyInstance) => {
+  fastify.get('/', (_req, res) => {
+    return res.status(200).send({
+      message: 'KnotAPI is live',
+      status: 'ok',
+      version: '1.0.0',
+      timestamp: new Date().toISOString(),
+    });
   });
-});
 
-export default router;
+  fastify.register(authRoutes, { prefix: '/auth' });
+
+  fastify.register(userRoutes, { prefix: '/user' });
+
+  fastify.register(linkRoutes, { prefix: '/link' });
+
+  fastify.register(redirectRoutes);
+};

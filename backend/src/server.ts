@@ -1,61 +1,60 @@
-import express from 'express';
-import config from '@/config';
-import helmet from 'helmet';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import router from '@/routes';
-import CorsOptions from '@/lib/cors';
-import cors from 'cors';
-import { logger, logtail } from '@/lib/winston';
-import { connectToDatabase, disconnectDatabase } from './lib/mongoose';
-import { ErrorHandler } from './utils/CustomError';
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import cookie from '@fastify/cookie';
+import compress from '@fastify/compress';
+import formbody from '@fastify/formbody';
+import helmet from '@fastify/helmet';
+import { connectToDatabase, disconnectDatabase } from './lib/mongoose.js';
+import CorsOptions from './lib/cors.js';
+import { v1Routes } from './routes/index.js';
+import { ErrorHandler } from './utils/CustomError.js';
+import config from './config/index.js';
+import { logger, logtail } from './lib/winston.js';
+import rateLimit from '@fastify/rate-limit';
 
-const app = express();
+const app = Fastify({ logger: false });
 
-app.use(cors(CorsOptions));
-
-app.use(helmet());
-
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: true }));
-
-app.use(express.static(`${__dirname}/public`));
-
-app.use(cookieParser());
-
-app.use(compression());
-
-(async function (): Promise<void> {
+async function start(): Promise<void> {
   try {
     await connectToDatabase();
 
-    app.use('/', router);
-
-    app.use(ErrorHandler);
-
-    app.listen(config.PORT, () => {
-      logger.info(`Server Listening at http://localhost:${config.PORT}`);
+    await app.register(cors, CorsOptions);
+    await app.register(helmet);
+    await app.register(formbody);
+    await app.register(cookie);
+    await app.register(compress);
+    await app.register(rateLimit, {
+      max: 100,
+      timeWindow: '1 minute',
     });
+
+    app.setErrorHandler(ErrorHandler);
+
+    await app.register(v1Routes, { prefix: '/api/v1' });
+
+    await app.listen({ port: config.PORT, host: '0.0.0.0' });
+
+    logger.info(`Server listening at http://localhost:${config.PORT}/api/v1`);
   } catch (err) {
     logger.error('Failed to start the server', err);
     if (config.NODE_ENV === 'production') {
       process.exit(1);
     }
   }
-})();
+}
+
+start();
 
 const serverTermination = async (signal: NodeJS.Signals): Promise<void> => {
   try {
-    await disconnectDatabase();
-
     logger.info('SERVER SHUTDOWN', signal);
-
+    await app.close();
+    await disconnectDatabase();
     logtail.flush();
-
     process.exit(0);
   } catch (err) {
     logger.error('ERROR DURING SERVER SHUTDOWN', err);
+    process.exit(1);
   }
 };
 
