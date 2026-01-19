@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "worker:sync-clicks": "node dist/workers/syncClicks.js"
   },
   "keywords": [],
   "author": "anshulkardam",
@@ -32,6 +33,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
     "nodemailer": "^7.0.10",
+    "redis": "^5.10.0",
     "typescript": "^5.9.3",
     "winston": "^3.18.3",
     "zod": "^4.1.12"

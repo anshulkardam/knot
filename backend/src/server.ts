@@ -11,12 +11,15 @@ import { ErrorHandler } from './utils/CustomError.js';
 import config from './config/index.js';
 import { logger, logtail } from './lib/winston.js';
 import rateLimit from '@fastify/rate-limit';
+import { redis } from './lib/redis.js';
+import { redirect } from './controllers/redirect/redirect.js';
 
 const app = Fastify({ logger: false });
 
 async function start(): Promise<void> {
   try {
     await connectToDatabase();
+    await redis.connect();
 
     await app.register(cors, CorsOptions);
     await app.register(helmet);
@@ -31,6 +34,8 @@ async function start(): Promise<void> {
     app.setErrorHandler(ErrorHandler);
 
     await app.register(v1Routes, { prefix: '/api/v1' });
+
+    app.get('/:code', redirect);
 
     await app.listen({ port: config.PORT, host: '0.0.0.0' });
 
@@ -48,8 +53,9 @@ start();
 const serverTermination = async (signal: NodeJS.Signals): Promise<void> => {
   try {
     logger.info('SERVER SHUTDOWN', signal);
-    await app.close();
+    await redis.quit();
     await disconnectDatabase();
+    await app.close();
     logtail.flush();
     process.exit(0);
   } catch (err) {

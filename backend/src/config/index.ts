@@ -19,6 +19,7 @@ const config = {
   SMTP_AUTH_USERNAME: process.env.SMTP_AUTH_USERNAME!,
   SMTP_AUTH_PASSWORD: process.env.SMTP_AUTH_PASSWORD!,
   CLIENT_ORIGIN: process.env.CLIENT_ORIGIN!,
+  REDIS_URL: process.env.REDIS_URL,
 };
 
 export default config;

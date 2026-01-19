@@ -2,8 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { authRoutes } from './auth.js';
 import { userRoutes } from './user.js';
 import { linkRoutes } from './link.js';
-import { redirectRoutes } from './redirect.js';
-
+import { getLinkStats } from '../controllers/getLinkStats.js';
 
 export const v1Routes = async (fastify: FastifyInstance) => {
   fastify.get('/', (_req, res) => {
@@ -21,5 +20,5 @@ export const v1Routes = async (fastify: FastifyInstance) => {
 
   fastify.register(linkRoutes, { prefix: '/link' });
 
-  fastify.register(redirectRoutes);
+  fastify.get('/stats/:code', getLinkStats);
 };
