@@ -34,9 +34,6 @@ export const authRoutes = async (fastify: FastifyInstance) => {
 
   fastify.get(
     '/refresh-token',
-    {
-      preHandler: [authenticateUser],
-    },
     refreshToken,
   );
 

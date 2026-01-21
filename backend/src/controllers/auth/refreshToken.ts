@@ -5,6 +5,8 @@ import {
   TokenPayload,
   verifyRefreshToken,
 } from '../../lib/jwt.js';
+import Token from '../../models/token.js';
+import bcrypt from 'bcrypt';
 
 export async function refreshToken(
   request: FastifyRequest,
@@ -15,8 +17,19 @@ export async function refreshToken(
     throw new CustomError('Refresh token missing', 401, 'Unauthorized');
   }
 
-  const { userId } = verifyRefreshToken(refreshToken) as TokenPayload;
-  const accessToken = generateAccessToken({ userId });
+  const payload = verifyRefreshToken(refreshToken) as TokenPayload;
+
+  const tokenDoc = await Token.findOne({ userId: payload.userId });
+  if (!tokenDoc) {
+    throw new CustomError('Invalid refresh token', 401, 'Unauthorized');
+  }
+
+  const isValid = await bcrypt.compare(refreshToken, tokenDoc.tokenHash);
+  if (!isValid) {
+    throw new CustomError('Invalid refresh token', 401, 'Unauthorized');
+  }
+
+  const accessToken = generateAccessToken({ userId: payload.userId });
 
   reply.send({ accessToken });
 }

@@ -1,9 +1,17 @@
 services:
+  backend:
+    build: .
+    restart: always
+    env_file:
+      - .env.production
+    depends_on:
+      - valkey
+    ports:
+      - "3000:3000"
+
   valkey:
     image: valkey/valkey:7
-    container_name: knot-valkey
-    ports:
-      - "6379:6379"
+    restart: always
     volumes:
       - valkey_data:/data
     command: valkey-server --appendonly yes

@@ -1,8 +1,9 @@
 import { createClient, RedisClientType } from 'redis';
 import { logger } from './winston.js';
+import config from '../config/index.js';
 
 export const redis: RedisClientType = createClient({
-  url: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
+  url: config.REDIS_URL,
 });
 
 redis.on('error', (err) => {
