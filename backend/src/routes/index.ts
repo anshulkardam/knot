@@ -9,7 +9,7 @@ import { linkTreeRoutes } from './tree.js';
 export const v1Routes = async (fastify: FastifyInstance) => {
   fastify.get('/', (_req, res) => {
     return res.status(200).send({
-      message: 'KnotAPI is live',
+      message: 'Knot API',
       status: 'ok',
       version: '1.0.0',
       timestamp: new Date().toISOString(),
