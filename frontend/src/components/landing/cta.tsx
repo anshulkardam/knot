@@ -16,7 +16,7 @@ export function CTA() {
               Ready to shorten your first link?
             </h2>
             <p className="mt-4 text-muted-foreground max-w-md mx-auto">
-              Join thousands of users who trust Shortify for their link management needs.
+              Join thousands of users who trust Knot for their link management needs.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/register">

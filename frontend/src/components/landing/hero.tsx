@@ -1,49 +1,48 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ArrowRight, Link2, Copy, Check, QrCode } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, Link2, Copy, Check, QrCode } from "lucide-react";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function Hero() {
-  const [url, setUrl] = useState("")
-  const [shortened, setShortened] = useState("")
-  const [copied, setCopied] = useState(false)
-  const [qrGenerated, setQrGenerated] = useState(false)
+  const [url, setUrl] = useState("");
+  const [shortened, setShortened] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [qrGenerated, setQrGenerated] = useState(false);
 
   const handleShorten = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (url) {
-      setShortened("short.ly/abc123")
-      setQrGenerated(false)
+      setShortened("short.ly/abc123");
+      setQrGenerated(false);
     }
-  }
+  };
 
   const handleGenerateQR = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (url) {
-      setQrGenerated(true)
-      setShortened("")
+      setQrGenerated(true);
+      setShortened("");
     }
-  }
+  };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(shortened)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(shortened);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleDownloadQR = () => {
     // Simulate QR download
-    const link = document.createElement("a")
-    link.download = "qr-code.png"
-    link.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`
-    link.click()
-  }
+    const link = document.createElement("a");
+    link.download = "qr-code.png";
+    link.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+    link.click();
+  };
 
   return (
     <section className="relative pt-32 pb-20 px-4 sm:px-6 overflow-hidden">
@@ -60,36 +59,66 @@ export function Hero() {
       </div>
 
       {/* Subtle glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-150 h-150 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-4xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 text-xs font-medium text-muted-foreground bg-secondary/50 rounded-full border border-border animate-fade-up">
-          <span className="w-1.5 h-1.5 bg-chart-1 rounded-full animate-pulse-subtle" />
-          Now with QR codes & advanced analytics
+        <div
+          className="
+  inline-flex items-center gap-2
+  px-3.5 py-1.5 mb-8
+  text-xs font-medium
+  text-muted-foreground
+  bg-secondary/60
+  border border-border/60
+  rounded-full
+  backdrop-blur-sm
+  animate-fade-up
+"
+        >
+          <span
+            className="
+    w-1.5 h-1.5
+    rounded-full
+    bg-emerald-500
+    shadow-[0_0_0_3px_rgba(16,185,129,0.15)]
+    animate-pulse-subtle
+  "
+          />
+
+          <span className="whitespace-nowrap">
+            Now with
+            <span className="mx-1 font-semibold text-foreground">Link Trees</span>& advanced
+            analytics
+          </span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance leading-[1.1] animate-fade-up animation-delay-100">
-          Shorten links.
+          Short links. QR codes. Link-in-bio.
           <br />
-          <span className="text-muted-foreground">Generate QR codes.</span>
+          <span className="text-muted-foreground">
+            All tied into one <span className="text-foreground font-semibold">Knot</span>.
+          </span>
         </h1>
 
         <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto text-pretty animate-fade-up animation-delay-200">
-          A minimalist link shortener and QR generator built for the modern web. Create short links, generate QR codes,
-          and track everything.
+          Knot is a minimalist link platform for the modern web — shorten URLs, generate QR codes,
+          build link trees, and track everything from one clean dashboard.
         </p>
 
         <div className="mt-10 max-w-xl mx-auto animate-fade-up animation-delay-300">
           <Tabs defaultValue="shorten" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/50 p-1">
+            <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/50 p-1 h-12">
               <TabsTrigger
                 value="shorten"
-                className="data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2"
+                className="data-[state=active]:bg-background text-lg data-[state=active]:shadow-sm gap-2"
               >
                 <Link2 className="h-4 w-4" />
                 Shorten Link
               </TabsTrigger>
-              <TabsTrigger value="qr" className="data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <TabsTrigger
+                value="qr"
+                className="data-[state=active]:bg-background text-lg data-[state=active]:shadow-sm gap-2"
+              >
                 <QrCode className="h-4 w-4" />
                 Generate QR
               </TabsTrigger>
@@ -126,7 +155,13 @@ export function Hero() {
                           <p className="font-mono text-sm text-foreground">{shortened}</p>
                         </div>
                       </div>
-                      <Button type="button" variant="secondary" size="sm" onClick={handleCopy} className="shrink-0">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleCopy}
+                        className="shrink-0"
+                      >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </div>
@@ -166,8 +201,16 @@ export function Hero() {
                       </div>
                       <div className="flex-1 text-left">
                         <p className="text-sm text-muted-foreground mb-1">QR Code for</p>
-                        <p className="font-mono text-sm text-foreground truncate max-w-[250px]">{url}</p>
-                        <Button type="button" variant="secondary" size="sm" className="mt-4" onClick={handleDownloadQR}>
+                        <p className="font-mono text-sm text-foreground truncate max-w-62.5">
+                          {url}
+                        </p>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="mt-4"
+                          onClick={handleDownloadQR}
+                        >
                           Download PNG
                         </Button>
                       </div>
@@ -179,14 +222,14 @@ export function Hero() {
           </Tabs>
         </div>
 
-        <p className="mt-6 text-xs text-muted-foreground animate-fade-up animation-delay-400">
+        {/* <p className="mt-6 text-xs text-muted-foreground animate-fade-up animation-delay-400">
           No account required for quick links.{" "}
           <Link href="/register" className="text-foreground hover:underline underline-offset-4">
             Sign up
           </Link>{" "}
           for advanced features.
-        </p>
+        </p> */}
       </div>
     </section>
-  )
+  );
 }

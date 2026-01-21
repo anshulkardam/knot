@@ -31,7 +31,7 @@ export function Footer() {
               <div className="p-2 rounded-lg bg-primary">
                 <Link2 className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold text-lg tracking-tight">Shortify</span>
+              <span className="font-semibold text-lg tracking-tight">Knot</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">Modern link shortening for the modern web.</p>
           </div>
@@ -87,7 +87,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Shortify. All rights reserved.
+            &copy; {new Date().getFullYear()} Knot. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">

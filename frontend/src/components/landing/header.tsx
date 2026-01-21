@@ -1,20 +1,21 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Link2 } from "lucide-react"
-import { useState, useEffect } from "react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Link2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false)
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header
@@ -25,27 +26,38 @@ export function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-2 rounded-lg bg-primary transition-transform group-hover:scale-105">
-              <Link2 className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold text-lg tracking-tight">Shortify</span>
+            <Image src={"/logo.png"} alt="logo" height={40} width={40} className="object-cover" />
+            <span className="font-semibold text-lg tracking-tight">Knot</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="#features"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               Features
             </Link>
-            <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="#pricing"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               Pricing
             </Link>
-            <Link href="#docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="#docs"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
               Docs
             </Link>
           </nav>
 
           <div className="flex items-center gap-3">
             <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground"
+              >
                 Sign in
               </Button>
             </Link>
@@ -58,5 +70,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
