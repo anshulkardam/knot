@@ -16,5 +16,14 @@ services:
       - valkey_data:/data
     command: valkey-server --appendonly yes
 
+  worker:
+    build: .
+    restart: always
+    env_file:
+      - .env.production
+    depends_on:
+      - valkey
+    command: ["node", "dist/workers/syncClicks.js"]
+
 volumes:
   valkey_data:

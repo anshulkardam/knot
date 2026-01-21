@@ -2,9 +2,12 @@ import { redis } from '../lib/redis.js';
 import Link from '../models/link.js';
 import mongoose from 'mongoose';
 import config from '../config/index.js';
+import { logger } from '../lib/winston.js';
+
+const INTERVAL_MS = 60 * 1000; // 1 minute
 
 async function syncClicks() {
-  console.log('[worker] syncing link clicks');
+  logger.info('[worker] syncing link clicks');
 
   let cursor = '0';
 
@@ -30,21 +33,29 @@ async function syncClicks() {
     }
   } while (cursor !== '0');
 
-  console.log('[worker] sync complete');
+  logger.info('[worker] sync complete');
 }
 
-// bootstrap (standalone worker)
-(async () => {
+async function startWorker() {
   try {
     await mongoose.connect(config.MONGO_URI);
-    await redis.connect();
+    if (!redis.isOpen) {
+      await redis.connect();
+    }
 
     await syncClicks();
 
-    await redis.quit();
-    process.exit(0);
+    setInterval(async () => {
+      try {
+        await syncClicks();
+      } catch (err) {
+        logger.error('[worker] error', err);
+      }
+    }, INTERVAL_MS);
   } catch (err) {
-    console.error('[worker] failed', err);
+    logger.error('[worker] failed', err);
     process.exit(1);
   }
-})();
+}
+
+startWorker();
