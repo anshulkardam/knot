@@ -19,12 +19,14 @@ import {
   Settings,
   Shield,
   LogOut,
+  TreePalm,
 } from "lucide-react";
 import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Links", href: "/dashboard/links", icon: LinkIcon },
+  { name: "Link Tree", href: "/dashboard/link-tree", icon: TreePalm },
+  { name: "Short Links", href: "/dashboard/links", icon: LinkIcon },
   { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
