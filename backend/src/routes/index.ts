@@ -3,7 +3,6 @@ import { authRoutes } from './auth.js';
 import { userRoutes } from './user.js';
 import { linkRoutes } from './link.js';
 import { getLinkStats } from '../controllers/getLinkStats.js';
-import { getQr } from '../controllers/getQR.js';
 import { linkTreeRoutes } from './tree.js';
 
 export const v1Routes = async (fastify: FastifyInstance) => {
@@ -25,6 +24,4 @@ export const v1Routes = async (fastify: FastifyInstance) => {
   fastify.register(linkTreeRoutes, { prefix: '/tree' });
 
   fastify.get('/stats/:code', getLinkStats);
-
-  fastify.get('/qr/:code', getQr);
 };

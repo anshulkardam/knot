@@ -1,7 +1,3 @@
-import mongoose from 'mongoose';
-
-export const generateMongooseId = () => new mongoose.Types.ObjectId();
-
 export const generateBackHalf = (length: number = 5): string => {
   const char: string =
     '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

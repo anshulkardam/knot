@@ -10,6 +10,7 @@ import { getMyLinks } from '../controllers/link/getAllLinks.js';
 import { updateLink } from '../controllers/link/updateLinkbyId.js';
 import { deleteLink } from '../controllers/link/deleteLinkbyId.js';
 import { createLink } from '../controllers/link/createShortLink.js';
+import { createQRcode } from '../controllers/link/createQRcode.js';
 
 export async function linkRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -22,6 +23,18 @@ export async function linkRoutes(fastify: FastifyInstance) {
       ],
     },
     createLink,
+  );
+
+  fastify.post(
+    '/qr',
+    {
+      preHandler: [
+        authenticateUser,
+        authorizeUser(['user', 'admin']),
+        validateBody(genLinkSchema),
+      ],
+    },
+    createQRcode,
   );
 
   fastify.get(

@@ -19,12 +19,16 @@ export async function refreshToken(
 
   const payload = verifyRefreshToken(refreshToken) as TokenPayload;
 
-  const tokenDoc = await Token.findOne({ userId: payload.userId });
+  const tokenDoc = await Token.findOne({ userId: payload.userId }).select(
+    'tokenHash',
+  );
+
   if (!tokenDoc) {
     throw new CustomError('Invalid refresh token', 401, 'Unauthorized');
   }
 
   const isValid = await bcrypt.compare(refreshToken, tokenDoc.tokenHash);
+
   if (!isValid) {
     throw new CustomError('Invalid refresh token', 401, 'Unauthorized');
   }

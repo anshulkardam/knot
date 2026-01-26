@@ -70,7 +70,7 @@ export async function register(
         role: newUser.role,
         totalVisitCount: newUser.totalVisitCount,
       },
+      accessToken,
     },
-    accessToken,
   });
 }

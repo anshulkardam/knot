@@ -62,7 +62,7 @@ export async function login(request: FastifyRequest, reply: FastifyReply) {
         role: user.role,
         totalVisitCount: user.totalVisitCount,
       },
+      accessToken,
     },
-    accessToken,
   });
 }
