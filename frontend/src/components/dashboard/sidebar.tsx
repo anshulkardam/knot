@@ -1,21 +1,26 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
-  Link2,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
+import {
   LayoutDashboard,
   LinkIcon,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  BarChart3,
   QrCode,
+  BarChart3,
+  Settings,
   Shield,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
+  LogOut,
+} from "lucide-react";
+import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -23,125 +28,89 @@ const navigation = [
   { name: "QR Codes", href: "/dashboard/qr-codes", icon: QrCode },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
-]
+];
 
-const adminNavigation = [{ name: "Admin Panel", href: "/admin", icon: Shield }]
+const adminNavigation = [{ name: "Admin Panel", href: "/admin", icon: Shield }];
 
 export function DashboardSidebar() {
-  const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
-  const isAdmin = true // TODO: Get from auth context
+  const pathname = usePathname();
+  const isAdmin = true; // later: from auth context
 
   return (
-    <>
-      {/* Mobile overlay */}
-      <div className="lg:hidden fixed inset-0 z-40 bg-background/80 backdrop-blur-sm hidden" />
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <Link href="/dashboard" className="flex items-center justify-start gap-2 px-2 h-10">
+          {/* Text logo (expanded) */}
+          <span className="font-semibold text-lg leading-none transition-opacity duration-200 group-data-[collapsible=icon]:hidden">
+            Knot
+          </span>
 
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 bg-sidebar border-r border-sidebar-border transition-all duration-300 hidden lg:flex flex-col",
-          collapsed ? "w-16" : "w-64",
-        )}
-      >
-        {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-sidebar-primary shrink-0">
-              <Link2 className="h-4 w-4 text-sidebar-primary-foreground" />
-            </div>
-            {!collapsed && (
-              <span className="font-semibold text-lg tracking-tight text-sidebar-foreground">Knot</span>
-            )}
-          </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "h-8 w-8 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
-              collapsed && "hidden",
-            )}
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        </div>
+          {/* Image logo (collapsed) */}
+          <span className="hidden group-data-[collapsible=icon]:block">
+            <Image
+              src="/logo.png"
+              alt="Knot logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
+          </span>
+        </Link>
+      </SidebarHeader>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-3 space-y-1">
-          {navigation.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50",
-                )}
-              >
-                <item.icon className="h-4 w-4 shrink-0" />
-                {!collapsed && <span>{item.name}</span>}
+      <SidebarContent>
+        <SidebarMenu className="p-2">
+          <>
+            {navigation.map((item) => {
+              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+              return (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton asChild isActive={isActive}>
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+
+            {isAdmin && (
+              <>
+                {adminNavigation.map((item) => {
+                  const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+                  return (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton asChild isActive={isActive}>
+                        <Link href={item.href}>
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </>
+            )}
+          </>
+        </SidebarMenu>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem className="">
+            <SidebarMenuButton asChild>
+              <Link href="/login" className="p-3 h-11 text-lg gap-2">
+                <LogOut className="h-4 w-4" />
+                <span>Sign out</span>
               </Link>
-            )
-          })}
-
-          {isAdmin && (
-            <>
-              {!collapsed && (
-                <div className="pt-4 pb-2 px-3">
-                  <p className="text-xs font-medium text-sidebar-foreground/40 uppercase tracking-wider">Admin</p>
-                </div>
-              )}
-              {adminNavigation.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50",
-                    )}
-                  >
-                    <item.icon className="h-4 w-4 shrink-0" />
-                    {!collapsed && <span>{item.name}</span>}
-                  </Link>
-                )
-              })}
-            </>
-          )}
-        </nav>
-
-        {/* Footer */}
-        <div className="p-3 border-t border-sidebar-border">
-          <Link
-            href="/login"
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors",
-            )}
-          >
-            <LogOut className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>Sign out</span>}
-          </Link>
-        </div>
-
-        {/* Collapse button for collapsed state */}
-        {collapsed && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute -right-3 top-20 h-6 w-6 rounded-full bg-sidebar border border-sidebar-border text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-            onClick={() => setCollapsed(false)}
-          >
-            <ChevronLeft className="h-3 w-3 rotate-180" />
-          </Button>
-        )}
-      </aside>
-    </>
-  )
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  );
 }

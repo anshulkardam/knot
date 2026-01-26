@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,61 +11,98 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Link2, Loader2 } from "lucide-react"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Link2, Loader2 } from "lucide-react";
+import { useApi } from "@/lib/apiClient";
 
 interface Link {
-  id: string
-  shortUrl: string
-  backHalf: string
-  originalUrl: string
-  clicks: number
-  createdAt: string
-  status: "active" | "expired" | "disabled"
+  _id: string;
+  title: string;
+  destination: string;
+  code: string;
+  isActive: boolean;
+  totalVisitCount: number;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt?: string | null;
 }
 
 interface EditLinkDialogProps {
-  link: Link
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSave: (link: Link) => void
+  link: Link;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: () => void;
 }
 
-export function EditLinkDialog({ link, open, onOpenChange, onSave }: EditLinkDialogProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [url, setUrl] = useState(link.originalUrl)
-  const [backHalf, setBackHalf] = useState(link.backHalf)
-  const [status, setStatus] = useState(link.status)
+export function EditLinkDialog({
+  link,
+  open,
+  onOpenChange,
+  onSave,
+}: EditLinkDialogProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [title, setTitle] = useState(link.title);
+  const [url, setUrl] = useState(link.destination);
+  const [backHalf, setBackHalf] = useState(link.code);
+  const [isActive, setIsActive] = useState(link.isActive);
+  const api = useApi();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      await api.patch(`/link/${link._id}`, {
+        title,
+        destination: url,
+        backHalf,
+      });
 
-    onSave({
-      ...link,
-      originalUrl: url,
-      backHalf,
-      shortUrl: `short.ly/${backHalf}`,
-      status,
-    })
-    setIsLoading(false)
-  }
+      alert("Link updated successfully!");
+      onSave();
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error("Error updating link:", error);
+      alert(
+        error.response?.data?.message ||
+          "Failed to update link. Please try again.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Edit link</DialogTitle>
-          <DialogDescription>Update your link settings and destination URL.</DialogDescription>
+          <DialogDescription>
+            Update your link settings and destination URL.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="edit-title">Title</Label>
+            <Input
+              id="edit-title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="edit-url">Destination URL</Label>
             <div className="relative">
@@ -84,35 +121,52 @@ export function EditLinkDialog({ link, open, onOpenChange, onSave }: EditLinkDia
           <div className="space-y-2">
             <Label htmlFor="edit-backHalf">Back-half</Label>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground whitespace-nowrap">short.ly/</span>
-              <Input id="edit-backHalf" value={backHalf} onChange={(e) => setBackHalf(e.target.value)} required />
+              <span className="text-sm text-muted-foreground whitespace-nowrap">
+                short.ly/
+              </span>
+              <Input
+                id="edit-backHalf"
+                value={backHalf}
+                onChange={(e) => setBackHalf(e.target.value)}
+                required
+              />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="edit-status">Status</Label>
-            <Select value={status} onValueChange={(value: "active" | "expired" | "disabled") => setStatus(value)}>
+            <Select
+              value={isActive ? "active" : "disabled"}
+              onValueChange={(value) => setIsActive(value === "active")}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="active">Active</SelectItem>
                 <SelectItem value="disabled">Disabled</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

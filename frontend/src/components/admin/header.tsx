@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Shield } from "lucide-react"
+import { Shield } from "lucide-react";
 
 export function AdminHeader() {
   return (
@@ -11,9 +11,11 @@ export function AdminHeader() {
         </div>
         <div>
           <h2 className="font-semibold text-sm">Admin Panel</h2>
-          <p className="text-xs text-muted-foreground">System-wide management</p>
+          <p className="text-xs text-muted-foreground">
+            System-wide management
+          </p>
         </div>
       </div>
     </header>
-  )
+  );
 }

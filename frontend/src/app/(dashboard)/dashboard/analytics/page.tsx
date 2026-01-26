@@ -1,25 +1,29 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AnalyticsChart } from "@/components/dashboard/analytics-chart"
-import { TopLinks } from "@/components/dashboard/top-links"
-import type { Metadata } from "next"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnalyticsChart } from "@/components/dashboard/analytics-chart";
+import { TopLinks } from "@/components/dashboard/top-links";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Analytics - Knot",
   description: "View analytics for your shortened links",
-}
+};
 
 export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground mt-1">Track performance across all your links</p>
+        <p className="text-muted-foreground mt-1">
+          Track performance across all your links
+        </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg font-medium">Click Overview</CardTitle>
+            <CardTitle className="text-lg font-medium">
+              Click Overview
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <AnalyticsChart />
@@ -42,7 +46,9 @@ export default function AnalyticsPage() {
                 <div key={location.country} className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span>{location.country}</span>
-                    <span className="text-muted-foreground">{location.clicks.toLocaleString()}</span>
+                    <span className="text-muted-foreground">
+                      {location.clicks.toLocaleString()}
+                    </span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <div
@@ -59,5 +65,5 @@ export default function AnalyticsPage() {
 
       <TopLinks />
     </div>
-  )
+  );
 }

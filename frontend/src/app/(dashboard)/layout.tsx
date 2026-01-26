@@ -1,19 +1,14 @@
-import type React from "react"
-import { DashboardSidebar } from "@/components/dashboard/sidebar"
-import { DashboardHeader } from "@/components/dashboard/header"
+import type React from "react";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { DashboardSidebar } from "@/components/dashboard/sidebar";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background flex">
+    <SidebarProvider>
       <DashboardSidebar />
-      <div className="flex-1 flex flex-col lg:pl-64">
-        <DashboardHeader />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
-      </div>
-    </div>
-  )
+      <SidebarTrigger />
+
+      <main className="flex-1 mt-10 pr-6">{children}</main>
+    </SidebarProvider>
+  );
 }

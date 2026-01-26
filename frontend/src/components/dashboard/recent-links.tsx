@@ -1,11 +1,22 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Copy, ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
-import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Copy,
+  ExternalLink,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
 
 const links = [
   {
@@ -40,17 +51,17 @@ const links = [
     createdAt: "2 days ago",
     status: "expired",
   },
-]
+];
 
 export function RecentLinks() {
   const handleCopy = (url: string) => {
-    navigator.clipboard.writeText(url)
-  }
+    navigator.clipboard.writeText(url);
+  };
 
   return (
     <Card className="bg-card border-border">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-medium">Recent Links</CardTitle>
+        <CardTitle className="text-2xl font-bitcount font-medium">Recent Links</CardTitle>
         <Link href="/dashboard/links">
           <Button variant="ghost" size="sm" className="text-muted-foreground">
             View all
@@ -66,12 +77,19 @@ export function RecentLinks() {
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="font-mono text-sm font-medium truncate">{link.shortUrl}</p>
-                  <Badge variant={link.status === "active" ? "default" : "secondary"} className="text-xs">
+                  <p className="font-mono text-sm font-medium truncate">
+                    {link.shortUrl}
+                  </p>
+                  <Badge
+                    variant={link.status === "active" ? "default" : "secondary"}
+                    className="text-xs"
+                  >
                     {link.status}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground truncate">{link.originalUrl}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {link.originalUrl}
+                </p>
                 <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                   <span>{link.clicks} clicks</span>
                   <span>{link.createdAt}</span>
@@ -79,11 +97,20 @@ export function RecentLinks() {
               </div>
 
               <div className="flex items-center gap-1 shrink-0">
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleCopy(link.shortUrl)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleCopy(link.shortUrl)}
+                >
                   <Copy className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                  <a href={`https://${link.shortUrl}`} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={`https://${link.shortUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 </Button>
@@ -110,5 +137,5 @@ export function RecentLinks() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

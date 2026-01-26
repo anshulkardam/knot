@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { BarChart3, TrendingUp } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { BarChart3, TrendingUp } from "lucide-react";
 
 const topLinks = [
   {
@@ -33,7 +33,7 @@ const topLinks = [
     trend: "+5%",
     originalUrl: "https://app.example.com/register",
   },
-]
+];
 
 export function TopLinks() {
   return (
@@ -55,12 +55,19 @@ export function TopLinks() {
                 {index + 1}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm font-medium truncate">{link.shortUrl}</p>
-                <p className="text-xs text-muted-foreground truncate">{link.originalUrl}</p>
+                <p className="font-mono text-sm font-medium truncate">
+                  {link.shortUrl}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {link.originalUrl}
+                </p>
               </div>
               <div className="text-right">
                 <p className="font-medium">{link.clicks.toLocaleString()}</p>
-                <Badge variant="secondary" className="bg-chart-1/10 text-chart-1 text-xs">
+                <Badge
+                  variant="secondary"
+                  className="bg-chart-1/10 text-chart-1 text-xs"
+                >
                   <TrendingUp className="h-3 w-3 mr-1" />
                   {link.trend}
                 </Badge>
@@ -70,5 +77,5 @@ export function TopLinks() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,74 +10,71 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { AlertTriangle, Loader2 } from "lucide-react"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 export function DangerZone() {
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [confirmText, setConfirmText] = useState("")
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (confirmText !== "DELETE") return
+    if (confirmText !== "DELETE") return;
 
-    setIsDeleting(true)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsDeleting(false)
-    setDeleteDialogOpen(false)
-    // In real app, redirect to home page
-  }
+    try {
+      setIsDeleting(true);
+
+      // TODO: replace with real API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // TODO: logout + redirect
+      setOpen(false);
+      setConfirmText("");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
-      <Card className="bg-card border-destructive/50">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium flex items-center gap-2 text-destructive">
-            <AlertTriangle className="h-5 w-5" />
-            Danger Zone
-          </CardTitle>
-          <CardDescription>Irreversible and destructive actions</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-lg bg-destructive/5 border border-destructive/20">
-            <div>
-              <p className="font-medium text-sm">Delete Account</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Permanently delete your account and all associated data.
-              </p>
-            </div>
-            <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
-              Delete Account
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-1">
+        <h2 className={`text-xl font-semibold text-destructive`}>Danger Zone</h2>
+        <p className="text-sm text-muted-foreground">
+          Permanently delete your account and all associated data
+        </p>
+      </div>
+      {/* Danger card */}
+      <Button variant="destructive" size="sm" onClick={() => setOpen(true)}>
+        Delete my account
+      </Button>
 
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      {/* Confirmation dialog */}
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-destructive">
               <AlertTriangle className="h-5 w-5" />
-              Delete Account
+              Delete my account
             </DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your account and remove all your data from our
-              servers.
+              This action is irreversible. All links, analytics, and data will be permanently
+              deleted.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="py-4 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="confirm">
-                Type <span className="font-mono font-bold">DELETE</span> to confirm
+                Type <span className="font-grotesk font-bold">DELETE</span> to confirm
               </Label>
               <Input
                 id="confirm"
+                placeholder="DELETE"
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
-                placeholder="DELETE"
+                autoFocus
               />
             </div>
           </div>
@@ -86,18 +83,22 @@ export function DangerZone() {
             <Button
               variant="outline"
               onClick={() => {
-                setDeleteDialogOpen(false)
-                setConfirmText("")
+                setOpen(false);
+                setConfirmText("");
               }}
             >
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={confirmText !== "DELETE" || isDeleting}>
-              {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete Account"}
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={confirmText !== "DELETE" || isDeleting}
+            >
+              {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete my account"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

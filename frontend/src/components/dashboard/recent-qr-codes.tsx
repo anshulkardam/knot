@@ -1,10 +1,15 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Download, ExternalLink, MoreHorizontal } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download, ExternalLink, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 const recentQRCodes = [
   {
@@ -31,20 +36,20 @@ const recentQRCodes = [
     scans: 45,
     createdAt: "2 days ago",
   },
-]
+];
 
 export function RecentQRCodes() {
   const handleDownload = (url: string) => {
-    const link = document.createElement("a")
-    link.download = "qr-code.png"
-    link.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`
-    link.click()
-  }
+    const link = document.createElement("a");
+    link.download = "qr-code.png";
+    link.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+    link.click();
+  };
 
   return (
     <Card className="bg-card border-border">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-lg font-medium">Recent QR Codes</CardTitle>
+        <CardTitle className="text-2xl font-bitcount font-medium">Recent QR Codes</CardTitle>
         <Link
           href="/dashboard/qr-codes"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -69,9 +74,13 @@ export function RecentQRCodes() {
               <div className="flex-1 min-w-0">
                 <p className="font-mono text-sm truncate">{qr.url}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-muted-foreground">{qr.scans} scans</span>
+                  <span className="text-xs text-muted-foreground">
+                    {qr.scans} scans
+                  </span>
                   <span className="text-muted-foreground">·</span>
-                  <span className="text-xs text-muted-foreground">{qr.createdAt}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {qr.createdAt}
+                  </span>
                 </div>
               </div>
               <DropdownMenu>
@@ -102,5 +111,5 @@ export function RecentQRCodes() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
