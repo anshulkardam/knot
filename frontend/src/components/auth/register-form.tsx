@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, User, ArrowRight, Loader2, Check } from "lucide-react";
-import { useApi } from "@/lib/apiClient";
+import { useRegister } from "@/hooks/auth/useRegister";
+import { toast } from "sonner";
 import { useAuth } from "@/context/authContext";
 
 const requirements = [
@@ -19,34 +18,36 @@ const requirements = [
 ];
 
 export function RegisterForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
-  const api = useApi();
   const { setAccessToken } = useAuth();
+  const register = useRegister();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      const { data } = await api.post("/auth/register", {
+    register.mutate(
+      {
         name,
-        email,
+        email: email.trim(),
         password,
-      });
-
-      setAccessToken(data.accessToken);
-      router.push("/dashboard");
-    } catch (err) {
-      // show toast later
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      {
+        onSuccess: (data) => {
+          console.log(data,data.data.accessToken)
+          setAccessToken(data.data.accessToken);
+          router.replace("/dashboard");
+        },
+        onError: (err) => {
+          toast.error(err.message || "Register failed");
+        },
+      },
+    );
   };
+
+  const isDisabled = register.isPending || !email.trim() || !name.trim() || !password;
 
   return (
     <div className="w-full max-w-sm animate-fade-up">
@@ -63,6 +64,7 @@ export function RegisterForm() {
           <div className="relative">
             <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
+              autoFocus
               id="name"
               type="text"
               placeholder="John Doe"
@@ -131,8 +133,8 @@ export function RegisterForm() {
           </div>
         </div>
 
-        <Button type="submit" className="w-full h-11 group" disabled={isLoading}>
-          {isLoading ? (
+        <Button type="submit" className="w-full h-11 group" disabled={isDisabled}>
+          {register.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <>

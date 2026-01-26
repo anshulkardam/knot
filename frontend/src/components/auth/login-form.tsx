@@ -1,7 +1,4 @@
 "use client";
-
-import type React from "react";
-
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,36 +6,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
-import { useApi } from "@/lib/apiClient";
+import { toast } from "sonner";
+import { useLogin } from "@/hooks/auth/useLogin";
 import { useAuth } from "@/context/authContext";
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
-  const api = useApi();
+  const login = useLogin();
   const { setAccessToken } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      const { data } = await api.post("/auth/login", {
-        email,
+    login.mutate(
+      {
+        email: email.trim(),
         password,
-      });
-
-      setAccessToken(data.accessToken);
-      router.push("/dashboard");
-    } catch (err) {
-      // show toast later
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      {
+        onSuccess: (data) => {
+          console.log(data, data.data.accessToken);
+          setAccessToken(data.data.accessToken);
+          router.replace("/dashboard");
+        },
+        onError: (err) => {
+          toast.error(err.message || "Login failed");
+        },
+      },
+    );
   };
+
+  const isDisabled = login.isPending || !email.trim() || !password;
 
   return (
     <div className="w-full max-w-sm animate-fade-up">
@@ -57,6 +57,7 @@ export function LoginForm() {
             <Input
               id="email"
               type="email"
+              autoFocus
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -92,8 +93,8 @@ export function LoginForm() {
           </div>
         </div>
 
-        <Button type="submit" className="w-full h-11 group" disabled={isLoading}>
-          {isLoading ? (
+        <Button type="submit" className="w-full h-11 group" disabled={isDisabled}>
+          {login.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <>

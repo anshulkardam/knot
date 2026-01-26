@@ -4,7 +4,7 @@ import type React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Link2, Copy, Check, QrCode } from "lucide-react";
+import { ArrowRight, Link2, Copy, Check, QrCode, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -45,7 +45,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative pt-32 pb-20 px-4 sm:px-6 overflow-hidden">
+    <section className="relative min-h-screen pt-44 pb-20 px-4 sm:px-6 overflow-hidden">
       {/* Subtle grid background */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div
@@ -61,7 +61,7 @@ export function Hero() {
       {/* Subtle glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-150 h-150 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-4xl mx-auto text-center">
+      <div className="relative max-w-7xl mx-auto text-center">
         <div
           className="
   inline-flex items-center gap-2
@@ -87,22 +87,26 @@ export function Hero() {
 
           <span className="whitespace-nowrap">
             Now with
-            <span className="mx-1 font-semibold text-foreground">Link Trees</span>& advanced
-            analytics
+            <span className="mx-1 font-semibold text-foreground">
+              Link Trees
+            </span>
+            & advanced analytics
           </span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-balance leading-[1.1] animate-fade-up animation-delay-100">
+        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bitcount font-medium tracking-tight text-balance leading-[1.1] animate-fade-up animation-delay-100">
           Short links. QR codes. Link-in-bio.
           <br />
           <span className="text-muted-foreground">
-            All tied into one <span className="text-foreground font-semibold">Knot</span>.
+            All tied into one{" "}
+            <span className="text-foreground font-semibold">Knot</span>.
           </span>
         </h1>
 
-        <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto text-pretty animate-fade-up animation-delay-200">
-          Knot is a minimalist link platform for the modern web — shorten URLs, generate QR codes,
-          build link trees, and track everything from one clean dashboard.
+        <p className="mt-6 text-xl font-medium text-muted-foreground max-w-4xl mx-auto text-pretty animate-fade-up animation-delay-200">
+          Knot is a minimalist link platform for the modern web. Shorten URLs,
+          Generate QR codes, build Link trees, and track everything from one
+          clean dashboard.
         </p>
 
         <div className="mt-10 max-w-xl mx-auto animate-fade-up animation-delay-300">
@@ -137,9 +141,9 @@ export function Hero() {
                       className="pl-11 h-12 bg-input border-border focus:border-primary/50 text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
-                  <Button type="submit" size="lg" className="h-12 px-6 group">
+                  <Button type="submit" size="lg" className="h-12 font-medium flex items-center text-base px-6 group">
                     Shorten
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </div>
 
@@ -151,8 +155,12 @@ export function Hero() {
                           <Check className="h-4 w-4 text-chart-1" />
                         </div>
                         <div className="text-left">
-                          <p className="text-xs text-muted-foreground">Your shortened link</p>
-                          <p className="font-mono text-sm text-foreground">{shortened}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Your shortened link
+                          </p>
+                          <p className="font-mono text-sm text-foreground">
+                            {shortened}
+                          </p>
                         </div>
                       </div>
                       <Button
@@ -162,7 +170,11 @@ export function Hero() {
                         onClick={handleCopy}
                         className="shrink-0"
                       >
-                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -183,9 +195,9 @@ export function Hero() {
                       className="pl-11 h-12 bg-input border-border focus:border-primary/50 text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
-                  <Button type="submit" size="lg" className="h-12 px-6 group">
+                  <Button type="submit" size="lg" className="h-12 font-medium flex items-center text-base px-6 group">
                     Generate
-                    <QrCode className="ml-2 h-4 w-4" />
+                    <QrCode className="h-4 w-4" />
                   </Button>
                 </div>
 
@@ -200,7 +212,9 @@ export function Hero() {
                         />
                       </div>
                       <div className="flex-1 text-left">
-                        <p className="text-sm text-muted-foreground mb-1">QR Code for</p>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          QR Code for
+                        </p>
                         <p className="font-mono text-sm text-foreground truncate max-w-62.5">
                           {url}
                         </p>

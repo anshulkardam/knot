@@ -1,64 +1,89 @@
-import { BarChart3, Globe, Lock, Zap, Link2, QrCode } from "lucide-react"
+"use client";
+import { Zap, Cpu, Fingerprint, Pencil, Settings2, Sparkles } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { FeatureCard } from "../blocks/grid-feature-cards";
 
 const features = [
   {
+    title: "Instant Redirects",
     icon: Zap,
-    title: "Lightning Fast",
-    description: "Links redirect in milliseconds. No delays, no waiting.",
+    description: "Your links resolve in milliseconds, anywhere in the world.",
   },
   {
-    icon: BarChart3,
-    title: "Advanced Analytics",
-    description: "Track clicks, locations, devices, and referrers in real-time.",
+    title: "Powerful Analytics",
+    icon: Cpu,
+    description: "See clicks, locations, devices, and referrers in real time.",
   },
   {
-    icon: Link2,
-    title: "Custom Back-halves",
-    description: "Create memorable, branded short links that stand out.",
+    title: "Secure Links",
+    icon: Fingerprint,
+    description: "Protection against spam, abuse, and malicious redirects built in.",
   },
   {
-    icon: Globe,
-    title: "Global CDN",
-    description: "Distributed network ensures fast redirects worldwide.",
+    title: "Branded & Custom URLs",
+    icon: Pencil,
+    description: "Use your own domain and create links that match your brand.",
   },
   {
-    icon: Lock,
-    title: "Secure & Private",
-    description: "Enterprise-grade security with complete data privacy.",
+    title: "Full Control",
+    icon: Settings2,
+    description: "Edit, disable, or reroute links anytime from your dashboard.",
   },
   {
-    icon: QrCode,
-    title: "QR Codes",
-    description: "Generate QR codes for any link with one click.",
+    title: "Built to Scale",
+    icon: Sparkles,
+    description: "From one link to millions—Knot grows with your traffic.",
   },
-]
+];
 
-export function Features() {
+export default function Features() {
   return (
-    <section id="features" className="py-24 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">Everything you need</h2>
-          <p className="mt-4 text-muted-foreground max-w-lg mx-auto text-pretty">
-            Powerful features wrapped in a simple, intuitive interface.
+    <section id="features" className="py-16 md:py-32 scroll-smooth">
+      <div className="mx-auto w-full max-w-5xl space-y-8 px-4">
+        <AnimatedContainer className="mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl font-bitcount tracking-wide text-balance md:text-4xl lg:text-5xl xl:font-medium">
+            Links, done right.
+          </h2>
+          <p className="text-muted-foreground mt-4 text-sm tracking-wide text-balance md:text-base">
+            Fast, branded, and built to scale.
           </p>
-        </div>
+        </AnimatedContainer>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group p-6 rounded-xl border border-border bg-card hover:bg-accent/50 transition-all duration-300 hover:border-muted-foreground/30"
-            >
-              <div className="p-3 w-fit rounded-lg bg-secondary mb-4 group-hover:bg-primary/10 transition-colors">
-                <feature.icon className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-              </div>
-              <h3 className="font-medium text-lg mb-2">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-            </div>
+        <AnimatedContainer
+          delay={0.4}
+          className="grid grid-cols-1 divide-x divide-y divide-dashed border border-dashed sm:grid-cols-2 md:grid-cols-3"
+        >
+          {features.map((feature, i) => (
+            <FeatureCard key={i} feature={feature} />
           ))}
-        </div>
+        </AnimatedContainer>
       </div>
     </section>
-  )
+  );
+}
+
+type ViewAnimationProps = {
+  delay?: number;
+  className?: React.ComponentProps<typeof motion.div>["className"];
+  children: React.ReactNode;
+};
+
+function AnimatedContainer({ className, delay = 0.1, children }: ViewAnimationProps) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return children;
+  }
+
+  return (
+    <motion.div
+      initial={{ filter: "blur(4px)", translateY: -8, opacity: 0 }}
+      whileInView={{ filter: "blur(0px)", translateY: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.8 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 }

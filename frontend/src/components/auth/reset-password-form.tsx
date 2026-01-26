@@ -1,47 +1,52 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Lock, ArrowRight, Loader2, Check } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Lock, ArrowRight, Loader2, Check } from "lucide-react";
 
 const requirements = [
   { text: "At least 8 characters", test: (p: string) => p.length >= 8 },
   { text: "One uppercase letter", test: (p: string) => /[A-Z]/.test(p) },
   { text: "One number", test: (p: string) => /[0-9]/.test(p) },
-]
+];
 
 export function ResetPasswordForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (password !== confirmPassword) return
+    e.preventDefault();
+    if (password !== confirmPassword) return;
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    setIsLoading(false)
-    router.push("/login")
-  }
+    setIsLoading(false);
+    router.push("/login");
+  };
 
-  const passwordsMatch = password && confirmPassword && password === confirmPassword
-  const allRequirementsMet = requirements.every((req) => req.test(password))
+  const passwordsMatch =
+    password && confirmPassword && password === confirmPassword;
+  const allRequirementsMet = requirements.every((req) => req.test(password));
 
   return (
     <div className="w-full max-w-sm animate-fade-up">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Reset password</h1>
-        <p className="text-sm text-muted-foreground mt-2">Create a new password for your account</p>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Reset password
+        </h1>
+        <p className="text-sm text-muted-foreground mt-2">
+          Create a new password for your account
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,7 +105,9 @@ export function ResetPasswordForm() {
               required
             />
           </div>
-          {confirmPassword && !passwordsMatch && <p className="text-xs text-destructive">Passwords do not match</p>}
+          {confirmPassword && !passwordsMatch && (
+            <p className="text-xs text-destructive">Passwords do not match</p>
+          )}
         </div>
 
         <Button
@@ -119,5 +126,5 @@ export function ResetPasswordForm() {
         </Button>
       </form>
     </div>
-  )
+  );
 }
