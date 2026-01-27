@@ -57,7 +57,7 @@ export async function register(
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     secure: config.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'none',
     path: '/',
   });
 

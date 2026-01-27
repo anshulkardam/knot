@@ -46,7 +46,7 @@ export async function login(request: FastifyRequest, reply: FastifyReply) {
   reply.setCookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: config.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'none',
     path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });

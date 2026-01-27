@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const CORS_WHITELIST = ['https://something'];
+const CORS_WHITELIST = ['https://knott.vercel.app'];
 
 type NodeEnv = 'development' | 'production';
 

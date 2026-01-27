@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGenShortLink } from "@/hooks/links/useGenShortLink";
 import { toast } from "sonner";
 import { useGenQR } from "@/hooks/links/useGenQR";
+import { useAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
 
 export function Hero() {
   const [url, setUrl] = useState("");
@@ -16,8 +18,14 @@ export function Hero() {
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const genLink = useGenShortLink();
   const genQR = useGenQR();
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
 
   const handleShorten = (e: React.FormEvent) => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
     e.preventDefault();
 
     genLink.mutate(
@@ -31,13 +39,17 @@ export function Hero() {
           setShortened(data.link.shortUrl);
         },
         onError: (err) => {
-          toast.error(err.message || "Login failed");
+          toast.error(err.message || "Server Error");
         },
       },
     );
   };
 
   const handleGenerateQR = (e: React.FormEvent) => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
     e.preventDefault();
 
     genQR.mutate(

@@ -10,7 +10,7 @@ export const v1Routes = async (fastify: FastifyInstance) => {
     return res.status(200).send({
       message: 'Knot API',
       status: 'ok',
-      version: '1.0.1',
+      version: '1.0.3',
       timestamp: new Date().toISOString(),
     });
   });
