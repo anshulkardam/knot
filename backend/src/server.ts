@@ -18,8 +18,13 @@ const app = Fastify({ logger: false });
 
 async function start(): Promise<void> {
   try {
+    Object.entries(config).forEach(([k, v]) => {
+      if (!v) throw new Error(`Missing env: ${k}`);
+    });
+    logger.info('Envs Loaded');
     await connectToDatabase();
     await redis.connect();
+    logger.info('Redis connected successfully');
 
     await app.register(cors, CorsOptions);
     await app.register(helmet);
@@ -52,10 +57,11 @@ start();
 
 const serverTermination = async (signal: NodeJS.Signals): Promise<void> => {
   try {
-    logger.info('SERVER SHUTDOWN', signal);
     await app.close();
+    logger.info('SERVER SHUTDOWN', signal);
     if (redis.isOpen) {
       await redis.quit();
+      logger.info('REDIS DISCONNECTED', signal);
     }
     await disconnectDatabase();
     logtail.flush();
