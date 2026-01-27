@@ -77,7 +77,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen pt-44 pb-20 px-4 sm:px-6 overflow-hidden">
+    <section className="relative min-h-screen pt-20 sm:pt-44 pb-20 px-4 sm:px-6 overflow-hidden">
       {/* Subtle grid background */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div
@@ -132,7 +132,7 @@ export function Hero() {
           </span>
         </h1>
 
-        <p className="mt-6 text-xl font-medium text-muted-foreground max-w-4xl mx-auto text-pretty animate-fade-up animation-delay-200">
+        <p className="mt-6 text-base sm:text-xl font-medium text-muted-foreground max-w-4xl mx-auto text-pretty animate-fade-up animation-delay-200">
           Knot is a minimalist link platform for the modern web. Shorten URLs, Generate QR codes,
           build Link trees, and track everything from one clean dashboard.
         </p>

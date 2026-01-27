@@ -7,18 +7,19 @@ export type MyLinksParams = {
   search: string;
   offset: number;
   limit: number;
+  qr: boolean;
 };
 
-export function useMyLinks({ search, offset, limit }: MyLinksParams) {
+export function useMyLinks({ search, offset, limit, qr }: MyLinksParams) {
   const api = useApi();
   const { accessToken } = useAuth();
 
   return useQuery({
-    queryKey: ["my-links", search, offset, limit],
+    queryKey: ["my-links", search, offset, limit, qr],
     enabled: !!accessToken,
     queryFn: async () => {
       const { data } = await api.get("link/my-links", {
-        params: { search, offset, limit },
+        params: { search, offset, limit, qr },
       });
 
       return data as {

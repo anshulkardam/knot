@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useMyLinks } from "@/hooks/links/useMyLinks";
+import { useMyLinks } from "@/hooks/links/useMyLinks"; 
 
-export function LinksTable({ columns }: { columns: any }) {
+export function LinksTable({ columns, isQR }: { columns: any; isQR: boolean }) {
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
   const limit = 10;
@@ -22,6 +22,7 @@ export function LinksTable({ columns }: { columns: any }) {
     search,
     offset,
     limit,
+    qr: isQR,
   });
 
   const table = useReactTable({

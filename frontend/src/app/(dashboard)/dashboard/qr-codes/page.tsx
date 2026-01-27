@@ -19,7 +19,7 @@ export default function LinksPage() {
         </div>
       </div>
       <div className="space-y-6">
-        <LinksTable columns={columns} />
+        <LinksTable columns={columns} isQR={true} />
       </div>
     </div>
   );

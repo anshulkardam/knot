@@ -216,7 +216,7 @@ export function LinkCard({ link, onUpdate, onDelete, onToggle }: LinkCardProps) 
             onClick={() => onToggle(link.id)}
             className={cn(
               "relative w-12 h-6 rounded-full transition-colors",
-              link.enabled ? "bg-success" : "bg-muted"
+              link.enabled ? "bg-primary" : "bg-muted-foreground"
             )}
           >
             <div

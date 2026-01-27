@@ -1,19 +1,16 @@
+"use client";
 import { RecentLinks } from "@/components/dashboard/recent-links";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentQRCodes } from "@/components/dashboard/recent-qr-codes";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Dashboard - Knot",
-  description: "Manage your shortened links and QR codes",
-};
+import { useAuth } from "@/context/authContext";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   return (
     <div className="space-y-8">
       <div className="mb-8">
-        <h1 className="font-bitcount text-4xl font-semibold text-foreground mb-1">
-          Welcome back, John
+        <h1 className="font-bitcount text-4xl font-medium text-foreground mb-1">
+          Welcome back, {user?.name}
         </h1>
         <p className="text-muted-foreground">Here's what's happening with your links today.</p>
       </div>

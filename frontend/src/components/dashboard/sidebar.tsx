@@ -32,11 +32,11 @@ const navigation = [
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-const adminNavigation = [{ name: "Admin Panel", href: "/admin", icon: Shield }];
+//const adminNavigation = [{ name: "Admin Panel", href: "/admin", icon: Shield }];
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const isAdmin = true; // later: from auth context
+ // const isAdmin = false; // later: from auth context
 
   return (
     <Sidebar collapsible="icon">
@@ -79,7 +79,7 @@ export function DashboardSidebar() {
               );
             })}
 
-            {isAdmin && (
+            {/* {isAdmin && (
               <>
                 {adminNavigation.map((item) => {
                   const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -96,7 +96,7 @@ export function DashboardSidebar() {
                   );
                 })}
               </>
-            )}
+            )} */}
           </>
         </SidebarMenu>
       </SidebarContent>

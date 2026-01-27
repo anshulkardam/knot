@@ -123,9 +123,9 @@ export default function LinkInBio() {
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Editor Column */}
-        <div className="space-y-6">
+        <div className="space-y-6 col-span-3">
           {/* Profile Section */}
           <div className="glass rounded-xl p-6">
             <h3 className="font-medium text-foreground text-xl mb-4 flex items-center gap-2">
@@ -206,14 +206,17 @@ export default function LinkInBio() {
         </div>
 
         {/* Preview Column */}
-        <Card className="sticky top-6">
-          <CardHeader>
+        <Card className="sticky top-6 col-span-2 bg-transparent border-none">
+          <CardHeader className="items-center flex flex-col justify-center">
             <CardTitle>Live preview</CardTitle>
             <CardDescription>How your page looks publicly</CardDescription>
           </CardHeader>
 
-          <CardContent>
-            <div className="mx-auto max-w-90 rounded-xl border bg-background p-6">
+          <CardContent className="">
+            <div className="mx-auto max-w-90 min-h-165 rounded-[50px]  border-12 bg-background p-6">
+              <div className="mx-auto items-center flex justify-center -mt-4 mb-6">
+                <div className="w-20 h-4 rounded-full bg-muted"></div>
+              </div>
               {/* Profile */}
               <div className="text-center mb-6">
                 <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-muted text-xl font-semibold">
