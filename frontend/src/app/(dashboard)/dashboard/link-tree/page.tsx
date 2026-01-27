@@ -1,53 +1,117 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ExternalLink, Eye, Plus, Instagram, Twitter, Linkedin, Github, Image } from "lucide-react";
-import { useState } from "react";
+import { ExternalLink, Eye, Plus, Save, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { BioLink } from "@/components/dashboard/link-tree/LinkCard";
 import { SortableLinkList } from "@/components/dashboard/link-tree/SortLinkList";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Twitter,
+  Instagram,
+  Linkedin,
+  Github,
+  Youtube,
+  Facebook,
+  Globe,
+  MessageCircle,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { useCreateTree } from "@/hooks/links/useCreateTree";
+import { z } from "zod";
+import { toast } from "sonner";
+import { useGetTree } from "@/hooks/links/useGetTree";
+import { useUpdateTree } from "@/hooks/links/useUpdateTree";
+import { useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 
-const initialLinks: BioLink[] = [
-  { id: "1", title: "My Portfolio", url: "https://johndoe.com", enabled: true, clicks: 342 },
-  {
-    id: "2",
-    title: "Latest Blog Post",
-    url: "https://blog.johndoe.com/ai-2024",
-    enabled: true,
-    clicks: 128,
-  },
-  { id: "3", title: "Book a Call", url: "https://cal.com/johndoe", enabled: true, clicks: 89 },
-  {
-    id: "4",
-    title: "Newsletter",
-    url: "https://newsletter.johndoe.com",
-    enabled: false,
-    clicks: 0,
-  },
-];
+export const linkTreeItemSchema = z.object({
+  title: z.string().min(1, "Title required"),
+  url: z.string().url("Invalid URL"),
+  category: z.enum(["social", "link"]),
+  order: z.number().int().nonnegative(),
+  isActive: z.boolean().optional(),
+});
+
+export const createLinkTreeSchema = z.object({
+  username: z
+    .string()
+    .min(3)
+    .regex(/^[a-z0-9_-]+$/, "Only lowercase, numbers, - and _"),
+  title: z.string().min(1),
+  bio: z.string().max(160).optional(),
+  items: z.array(linkTreeItemSchema),
+});
+
+export type CreateLinkTreeInput = z.infer<typeof createLinkTreeSchema>;
+
+export const SOCIAL_OPTIONS = [
+  { id: "twitter", label: "Twitter", icon: Twitter },
+  { id: "instagram", label: "Instagram", icon: Instagram },
+  { id: "linkedin", label: "LinkedIn", icon: Linkedin },
+  { id: "github", label: "GitHub", icon: Github },
+  { id: "youtube", label: "YouTube", icon: Youtube },
+  { id: "facebook", label: "Facebook", icon: Facebook },
+  { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { id: "website", label: "Website", icon: Globe },
+  { id: "custom", label: "Custom", icon: Globe },
+] as const;
 
 type SocialLink = {
   id: string;
-  type: "twitter" | "instagram" | "linkedin" | "github";
+  type: (typeof SOCIAL_OPTIONS)[number]["id"];
   handle: string;
   enabled: boolean;
 };
 
 const MAX_SOCIALS = 5;
 
-const initialSocials: SocialLink[] = [
-  { id: "1", type: "twitter", handle: "@johndoe", enabled: true },
-  { id: "2", type: "instagram", handle: "@john.doe", enabled: true },
-];
-
 export default function LinkInBio() {
-  const [links, setLinks] = useState<BioLink[]>(initialLinks);
-  const [bioName, setBioName] = useState("John Doe");
-  const [bioText, setBioText] = useState(
-    "Product Designer & Creator. Building cool things on the internet.",
-  );
+  const [links, setLinks] = useState<BioLink[]>([]);
+  const [bioName, setBioName] = useState("");
+  const [bioText, setBioText] = useState("");
+  const { data: tree, isLoading } = useGetTree();
+  const createTree = useCreateTree();
+  const updateTree = useUpdateTree(tree?._id ?? "");
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
 
-  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(initialSocials);
+  useEffect(() => {
+    if (!tree) return;
+
+    setBioName(tree.title.replace(" | Links", ""));
+    setBioText(tree.bio ?? "");
+
+    const socials = tree.items
+      .filter((i) => i.category === "social")
+      .map((i) => ({
+        id: crypto.randomUUID(),
+        type:
+          SOCIAL_OPTIONS.find((o) => o.label.toLowerCase() === i.title.toLowerCase())?.id ??
+          "custom",
+        handle: i.url,
+        enabled: i.isActive,
+      }));
+
+    const links = tree.items
+      .filter((i) => i.category === "link")
+      .map((i) => ({
+        id: crypto.randomUUID(),
+        title: i.title,
+        url: i.url,
+        enabled: i.isActive,
+        clicks: 0,
+      }));
+
+    setSocialLinks(socials);
+    setLinks(links);
+  }, [tree]);
 
   const handleReorder = (newLinks: BioLink[]) => {
     setLinks(newLinks);
@@ -98,8 +162,64 @@ export default function LinkInBio() {
     setSocialLinks((prev) => prev.filter((s) => s.id !== id));
   };
 
-  const toggleSocial = (id: string) => {
-    setSocialLinks((prev) => prev.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s)));
+  const handleToggleSocial = (id: string) => {
+    setSocialLinks((prev) =>
+      prev.map((social) => (social.id === id ? { ...social, enabled: !social.enabled } : social)),
+    );
+  };
+
+  const socialItems = socialLinks
+    .filter((s) => s.handle.trim())
+    .map((s, index) => ({
+      title: SOCIAL_OPTIONS.find((o) => o.id === s.type)?.label ?? "Social",
+      url: s.handle.startsWith("http") ? s.handle : `https://${s.handle.replace(/^@/, "")}`,
+      category: "social" as const,
+      order: index,
+      isActive: s.enabled,
+    }));
+
+  const linkItems = links.map((l, index) => ({
+    title: l.title,
+    url: l.url,
+    category: "link" as const,
+    order: socialItems.length + index,
+    isActive: l.enabled,
+  }));
+
+  const queryClient = useQueryClient();
+
+  const handleSave = () => {
+    const payload = {
+      username: bioName.toLowerCase().replace(/\s+/g, ""),
+      title: `${bioName} | Links`,
+      bio: bioText,
+      items: [...socialItems, ...linkItems],
+    };
+
+    const parsed = createLinkTreeSchema.safeParse(payload);
+
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0].message);
+      return;
+    }
+
+    if (!tree) {
+      // CREATE
+      createTree.mutate(parsed.data, {
+        onSuccess: () => {
+          toast.success("Link tree created");
+          queryClient.invalidateQueries({ queryKey: ["link-tree", "me"] });
+        },
+      });
+    } else {
+      // UPDATE
+      updateTree.mutate(parsed.data, {
+        onSuccess: () => {
+          toast.success("Changes saved");
+          queryClient.invalidateQueries({ queryKey: ["link-tree", "me"] });
+        },
+      });
+    }
   };
 
   return (
@@ -111,13 +231,19 @@ export default function LinkInBio() {
           <p className="text-muted-foreground">Customize all your links. One destination.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline">
+          {/* <Button variant="outline">
             <Eye className="h-4 w-4" />
             Preview
+          </Button> */}
+          <Button asChild variant="outline">
+            <Link href={`/${tree?.username}`} target="__blank">
+              <ExternalLink className="h-4 w-4" />
+              View Live
+            </Link>
           </Button>
-          <Button>
-            <ExternalLink className="h-4 w-4" />
-            View Live
+          <Button onClick={handleSave} disabled={createTree.isPending || updateTree.isPending}>
+            <Save className="h-4 w-4" />
+            Save Changes
           </Button>
         </div>
       </div>
@@ -160,30 +286,68 @@ export default function LinkInBio() {
             </CardHeader>
 
             <CardContent className="space-y-4">
-              {socialLinks.map((social) => (
-                <div key={social.id} className="flex items-center gap-3 rounded-lg border p-3">
-                  <Input
-                    placeholder="Handle or URL"
-                    value={social.handle}
-                    onChange={(e) => updateSocial(social.id, { handle: e.target.value })}
-                  />
+              {socialLinks.map((social) => {
+                const selected =
+                  SOCIAL_OPTIONS.find((s) => s.id === social.type) ?? SOCIAL_OPTIONS.at(-1)!;
 
-                  <Button variant="ghost" size="icon" onClick={() => toggleSocial(social.id)}>
-                    {social.enabled ? "On" : "Off"}
-                  </Button>
+                const Icon = selected.icon;
 
-                  <Button variant="ghost" size="icon" onClick={() => removeSocial(social.id)}>
-                    ✕
-                  </Button>
-                </div>
-              ))}
+                return (
+                  <div key={social.id} className="flex items-center gap-3 rounded-lg border p-3">
+                    {/* Icon */}
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
+                      <Icon className="h-4 w-4 text-muted-foreground" />
+                    </div>
+
+                    {/* Social Select */}
+                    <Select
+                      value={social.type}
+                      onValueChange={(value) =>
+                        updateSocial(social.id, {
+                          type: value as SocialLink["type"],
+                        })
+                      }
+                    >
+                      <SelectTrigger className="h-9 w-35">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SOCIAL_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.id} value={opt.id}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Handle / URL */}
+                    <Input
+                      className="flex-1"
+                      placeholder={social.type === "custom" ? "Enter URL" : "Username or URL"}
+                      value={social.handle}
+                      onChange={(e) => updateSocial(social.id, { handle: e.target.value })}
+                    />
+
+                    {/* Toggle */}
+                    <Switch
+                      checked={social.enabled}
+                      onCheckedChange={() => handleToggleSocial(social.id)}
+                    />
+
+                    {/* Remove */}
+                    <Button variant="ghost" size="icon" onClick={() => removeSocial(social.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                );
+              })}
 
               <Button
                 variant="outline"
                 disabled={socialLinks.length >= MAX_SOCIALS}
-                onClick={() => addSocial("twitter")}
+                onClick={() => addSocial("instagram")}
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add social link
               </Button>
             </CardContent>

@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Copy, ExternalLink, MoreHorizontal, Link2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export type LinkRow = {
   _id: string;
@@ -20,12 +21,13 @@ export const columns: ColumnDef<LinkRow>[] = [
     header: "Short link",
     cell: ({ row }) => {
       const [copied, setCopied] = useState(false);
-      const shortUrl = `knot.link/${row.original.code}`;
+      const shortUrl = `${process.env.NEXT_PUBLIC_CLIENT_URL}/${row.original.code}`;
 
       const copy = () => {
         navigator.clipboard.writeText(shortUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
+        toast.success("Copied to Clipboard")
       };
 
       return (
