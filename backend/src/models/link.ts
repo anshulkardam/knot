@@ -3,8 +3,9 @@ import { model, Schema, Types } from 'mongoose';
 export interface ILink {
   title: string;
   destination: string;
-  code: string;           
+  code: string;
   creator: Types.ObjectId;
+  QrCode: boolean;
   isActive: boolean;
   totalVisitCount: number;
   expiresAt?: Date | null;
@@ -30,6 +31,11 @@ const linkSchema = new Schema<ILink>(
       index: true,
     },
 
+    QrCode: {
+      type: Boolean,
+      default: false,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -45,7 +51,7 @@ const linkSchema = new Schema<ILink>(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model<ILink>('Link', linkSchema);

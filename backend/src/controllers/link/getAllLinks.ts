@@ -9,13 +9,22 @@ export async function getMyLinks(request: FastifyRequest, reply: FastifyReply) {
     search = '',
     offset = '0',
     limit = '10',
-  } = request.query as Record<string, string>;
+    qr,
+  } = request.query as Record<string, unknown>;
 
   const skip = Number(offset);
   const take = Number(limit);
 
+  let qrBoolean: boolean | undefined;
+
+  if (typeof qr === 'string') {
+    if (qr === 'true') qrBoolean = true;
+    if (qr === 'false') qrBoolean = false;
+  }
+
   const query: FilterQuery<typeof Link> = {
     creator: userId,
+    QrCode: qrBoolean,
   };
 
   if (search) {

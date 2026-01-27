@@ -27,6 +27,7 @@ export async function createQRcode(request: FastifyRequest, reply: FastifyReply)
     destination,
     code,
     creator: userId,
+    QrCode: true
   });
 
   const shortUrl = `${config.CLIENT_ORIGIN}/${link.code}`;
