@@ -21,7 +21,7 @@ export const columns: ColumnDef<LinkRow>[] = [
     header: "Short link",
     cell: ({ row }) => {
       const [copied, setCopied] = useState(false);
-      const shortUrl = `${process.env.NEXT_PUBLIC_CLIENT_URL}/${row.original.code}`;
+      const shortUrl = `${process.env.NEXT_PUBLIC_SHORT_PREFIX}/${row.original.code}`;
 
       const copy = () => {
         navigator.clipboard.writeText(shortUrl);

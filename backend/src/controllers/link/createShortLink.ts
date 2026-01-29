@@ -33,7 +33,7 @@ export async function createLink(request: FastifyRequest, reply: FastifyReply) {
       id: link._id,
       title: link.title,
       destination: link.destination,
-      shortUrl: `${config.CLIENT_ORIGIN}/${link.code}`,
+      shortUrl: `${config.BACKEND_API}/${link.code}`,
     },
   });
 }

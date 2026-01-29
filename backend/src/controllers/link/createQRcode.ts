@@ -30,7 +30,7 @@ export async function createQRcode(request: FastifyRequest, reply: FastifyReply)
     QrCode: true
   });
 
-  const shortUrl = `${config.CLIENT_ORIGIN}/${link.code}`;
+  const shortUrl = `${config.BACKEND_API}/${link.code}`;
 
   const qrPng = await QRCode.toBuffer(shortUrl, {
     type: 'png',

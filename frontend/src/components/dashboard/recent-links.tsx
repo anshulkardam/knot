@@ -54,7 +54,7 @@ export function RecentLinks() {
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-mono text-sm font-medium truncate">{`${process.env.NEXT_PUBLIC_CLIENT_URL}/${link.code}`}</p>
+                      <p className="font-mono text-sm font-medium truncate">{`${process.env.NEXT_PUBLIC_SHORT_PREFIX}/${link.code}`}</p>
                       <Badge variant={link.isActive ? "default" : "secondary"} className="text-xs">
                         {link.isActive ? "Active" : "Disabled"}
                       </Badge>

@@ -54,7 +54,7 @@ export function RecentQRCodes() {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm truncate">{`${process.env.NEXT_PUBLIC_CLIENT_URL}/${qr.code}`}</p>
+                <p className="font-mono text-sm truncate">{`${process.env.NEXT_PUBLIC_SHORT_PREFIX}/${qr.code}`}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs text-muted-foreground">{qr.totalVisitCount} scans</span>
                   <span className="text-muted-foreground">·</span>
