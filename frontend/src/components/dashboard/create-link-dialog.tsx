@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,64 +14,47 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Link2, Loader2 } from "lucide-react";
-import { useApi } from "@/lib/apiClient";
+import { Plus, Link2, Check, Copy } from "lucide-react";
+import { useGenShortLink } from "@/hooks/links/useGenShortLink";
+import { generateTitleFromUrl } from "@/lib/helper";
+import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
-interface CreateLinkResponse {
-  link: {
-    id: string;
-    title: string;
-    destination: string;
-    shortUrl: string;
-  };
-}
-
-export function CreateLinkDialog({
-  onLinkCreated,
-}: {
-  onLinkCreated?: () => void;
-}) {
+export function CreateLinkDialog({ onLinkCreated }: { onLinkCreated?: () => void }) {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [customBackHalf, setCustomBackHalf] = useState("");
-  const api = useApi();
+  const [shortened, setShortened] = useState("");
+  const [copied, setCopied] = useState(false);
+  const genLink = useGenShortLink();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!url.trim()) return;
-
-    setIsLoading(true);
-
-    try {
-      const response = await api.post<CreateLinkResponse>("/link/generate", {
-        title: title.trim() || new URL(url).hostname,
-        destination: url.trim(),
-        backHalf: customBackHalf.trim() || undefined,
-      });
-
-      console.log("Link created successfully:", response.data);
-      alert("Link created successfully!");
-
-      setUrl("");
-      setTitle("");
-      setCustomBackHalf("");
-      setOpen(false);
-
-      // Notify parent component to refresh links
-      onLinkCreated?.();
-    } catch (error: any) {
-      console.error("Error creating link:", error);
-      alert(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCopy = () => {
+    navigator.clipboard.writeText(shortened);
+    setCopied(true);
+    toast.success("Copied to Clipboard");
+    setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleShorten = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    genLink.mutate(
+      {
+        destination: url,
+        title: generateTitleFromUrl(url),
+      },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          setShortened(data.link.shortUrl);
+        },
+        onError: (err) => {
+          toast.error(err.message || "Server Error");
+        },
+      },
+    );
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -89,7 +71,7 @@ export function CreateLinkDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+        <form onSubmit={handleShorten} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title (optional)</Label>
             <Input
@@ -99,9 +81,7 @@ export function CreateLinkDialog({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <p className="text-xs text-muted-foreground">
-              Leave empty to use the domain name
-            </p>
+            <p className="text-xs text-muted-foreground">Leave empty to use the domain name</p>
           </div>
 
           <div className="space-y-2">
@@ -124,7 +104,7 @@ export function CreateLinkDialog({
             <Label htmlFor="backHalf">Custom back-half (optional)</Label>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground whitespace-nowrap">
-                short.ly/
+                {process.env.NEXT_PUBLIC_SHORT_PREFIX}/
               </span>
               <Input
                 id="backHalf"
@@ -138,22 +118,44 @@ export function CreateLinkDialog({
             </p>
           </div>
 
-          <DialogFooter className="pt-4">
+          {shortened && (
+            <div className="mt-4 p-4 bg-card border border-border rounded-lg">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-left">
+                  <p className="text-xs text-muted-foreground">Your shortened link</p>
+                  <p className="font-mono text-sm break-all">{shortened}</p>
+                </div>
+
+                <Button type="button" size="icon" variant="secondary" onClick={handleCopy}>
+                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {shortened ? (
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
+              variant="default"
+              className="w-full mt-3"
+              onClick={() => {
+                setShortened("");
+                setUrl("");
+                setTitle("");
+                setCustomBackHalf("");
+              }}
             >
-              Cancel
+              Create another link
             </Button>
-            <Button type="submit" disabled={isLoading || !url.trim()}>
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Create Link"
-              )}
-            </Button>
-          </DialogFooter>
+          ) : (
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={genLink.isPending || !url.trim()}>
+                {genLink.isPending ? <Spinner /> : "Create Link"}
+              </Button>
+            </DialogFooter>
+          )}
         </form>
       </DialogContent>
     </Dialog>

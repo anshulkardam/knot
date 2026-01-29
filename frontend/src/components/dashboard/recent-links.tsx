@@ -18,7 +18,7 @@ import { Spinner } from "../ui/spinner";
 
 export function RecentLinks() {
   const handleCopy = (url: string) => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SHORT_PREFIX}/${url}`);
     toast.success("Copied to Clipboard");
   };
 
@@ -76,11 +76,15 @@ export function RecentLinks() {
                       <Copy className="h-4 w-4" />
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                      <a href={`https://${link.code}`} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={`${process.env.NEXT_PUBLIC_SHORT_PREFIX}/${link.code}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </Button>
-                    <DropdownMenu>
+                    {/* <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
                           <MoreHorizontal className="h-4 w-4" />
@@ -96,7 +100,7 @@ export function RecentLinks() {
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
-                    </DropdownMenu>
+                    </DropdownMenu> */}
                   </div>
                 </div>
               ))}

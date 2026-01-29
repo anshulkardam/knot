@@ -22,7 +22,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, isAuthenticated } = useAuth();
   const register = useRegister();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ export function RegisterForm() {
       },
       {
         onSuccess: (data) => {
-          console.log(data,data.data.accessToken)
+          console.log(data, data.data.accessToken);
           setAccessToken(data.data.accessToken);
           router.replace("/dashboard");
         },
@@ -48,6 +48,10 @@ export function RegisterForm() {
   };
 
   const isDisabled = register.isPending || !email.trim() || !name.trim() || !password;
+
+  if (isAuthenticated) {
+    router.push("/dashboard");
+  }
 
   return (
     <div className="w-full max-w-sm animate-fade-up">

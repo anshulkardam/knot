@@ -15,7 +15,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const login = useLogin();
-  const { setAccessToken } = useAuth();
+  const { setAccessToken, isAuthenticated } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +39,10 @@ export function LoginForm() {
   };
 
   const isDisabled = login.isPending || !email.trim() || !password;
+
+  if (isAuthenticated) {
+    router.push("/dashboard");
+  }
 
   return (
     <div className="w-full max-w-sm animate-fade-up">

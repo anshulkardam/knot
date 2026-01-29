@@ -235,12 +235,14 @@ export default function LinkInBio() {
             <Eye className="h-4 w-4" />
             Preview
           </Button> */}
-          <Button asChild variant="outline">
-            <Link href={`/${tree?.username}`} target="__blank">
-              <ExternalLink className="h-4 w-4" />
-              View Live
-            </Link>
-          </Button>
+          {tree && (
+            <Button asChild variant="outline">
+              <Link href={`/${tree?.username}`} target="__blank">
+                <ExternalLink className="h-4 w-4" />
+                View Live
+              </Link>
+            </Button>
+          )}
           <Button onClick={handleSave} disabled={createTree.isPending || updateTree.isPending}>
             <Save className="h-4 w-4" />
             Save Changes
@@ -259,7 +261,7 @@ export default function LinkInBio() {
             </h3>
             <div className="flex items-start gap-4 mb-4">
               <div className="w-20 h-20 rounded-full bg-linear-to-br from-primary/80 to-primary flex items-center justify-center text-2xl font-semibold text-primary-foreground shrink-0">
-                JD
+                {bioName ? bioName.slice(0, 1).toUpperCase() : "JD"}
               </div>
               <div className="flex-1 space-y-3">
                 <Input

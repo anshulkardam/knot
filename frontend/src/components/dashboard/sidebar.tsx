@@ -22,6 +22,7 @@ import {
   TreePalm,
 } from "lucide-react";
 import Image from "next/image";
+import { useAuth } from "@/context/authContext";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -36,7 +37,8 @@ const navigation = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
- // const isAdmin = false; // later: from auth context
+  // const isAdmin = false; // later: from auth context
+  const { logout } = useAuth();
 
   return (
     <Sidebar collapsible="icon">
@@ -104,11 +106,9 @@ export function DashboardSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem className="">
-            <SidebarMenuButton asChild>
-              <Link href="/login" className="p-3 h-11 text-lg gap-2">
-                <LogOut className="h-4 w-4" />
-                <span>Sign out</span>
-              </Link>
+            <SidebarMenuButton onClick={logout} className="p-3 h-11 text-lg gap-2">
+              <LogOut className="h-4 w-4" />
+              <span>Sign out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -59,7 +59,7 @@ export default async function BioPage({ params }: { params: Promise<{ username: 
           {/* Profile */}
           <div className="flex flex-col items-center mb-10">
             <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-3xl font-semibold text-black mb-4">
-              {tree.title.slice(0, 2).toUpperCase()}
+              {tree.title.slice(0, 1).toUpperCase()}
             </div>
 
             <h1 className="text-2xl font-semibold mb-2 text-center">

@@ -4,6 +4,8 @@ import { Copy, ExternalLink, MoreHorizontal, Link2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export type LinkRow = {
   _id: string;
@@ -27,7 +29,7 @@ export const columns: ColumnDef<LinkRow>[] = [
         navigator.clipboard.writeText(shortUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
-        toast.success("Copied to Clipboard")
+        toast.success("Copied to Clipboard");
       };
 
       return (
@@ -35,8 +37,10 @@ export const columns: ColumnDef<LinkRow>[] = [
           <Button variant="ghost" size="icon" onClick={copy}>
             {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
           </Button>
-          <Button variant="ghost" size="icon">
-            <ExternalLink className="h-4 w-4" />
+          <Button asChild variant="ghost" size="icon">
+            <Link target="__blank" href={shortUrl}>
+              <ExternalLink className="h-4 w-4" />
+            </Link>
           </Button>
           <div className="flex flex-col leading-tight">
             <span className="font-medium">{shortUrl}</span>

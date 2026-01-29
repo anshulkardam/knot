@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useGenQR } from "@/hooks/links/useGenQR";
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
+import { generateTitleFromUrl } from "@/lib/helper";
 
 export function Hero() {
   const [url, setUrl] = useState("");
@@ -31,7 +32,7 @@ export function Hero() {
     genLink.mutate(
       {
         destination: url,
-        title: url,
+        title: generateTitleFromUrl(url),
       },
       {
         onSuccess: (data) => {
@@ -55,7 +56,7 @@ export function Hero() {
     genQR.mutate(
       {
         destination: url,
-        title: url,
+        title: generateTitleFromUrl(url),
       },
       {
         onSuccess: (blob) => {

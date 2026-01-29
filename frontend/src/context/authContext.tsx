@@ -40,8 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: user } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/current`, {
           headers: {
             Authorization: `Bearer ${data.accessToken}`,
-            withCredentials: true,
           },
+          withCredentials: true,
         });
 
         setUser(user.data);
@@ -59,6 +59,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
         withCredentials: true,
       });
     } finally {

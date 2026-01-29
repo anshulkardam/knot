@@ -79,7 +79,11 @@ export function RecentQRCodes() {
                     Download
                   </DropdownMenuItem> */}
                   <DropdownMenuItem asChild>
-                    <a href={qr.code} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={`${process.env.NEXT_PUBLIC_SHORT_PREFIX}/${qr.code}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Open URL
                     </a>

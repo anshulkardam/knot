@@ -2,6 +2,7 @@ import type React from "react";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { Metadata } from "next";
+import { RequireAuth } from "@/components/require-auth";
 
 export const metadata: Metadata = {
   title: "Dashboard - Knot",
@@ -10,11 +11,13 @@ export const metadata: Metadata = {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
-      <DashboardSidebar />
-      <SidebarTrigger />
+    <RequireAuth>
+      <SidebarProvider>
+        <DashboardSidebar />
+        <SidebarTrigger />
 
-      <main className="flex-1 mt-10 pr-6">{children}</main>
-    </SidebarProvider>
+        <main className="flex-1 mt-10 pr-6">{children}</main>
+      </SidebarProvider>
+    </RequireAuth>
   );
 }

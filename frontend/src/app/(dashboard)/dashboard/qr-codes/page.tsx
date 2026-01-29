@@ -1,9 +1,6 @@
-import { CreateLinkDialog } from "@/components/dashboard/create-link-dialog";
+import { CreateQRDialog } from "@/components/dashboard/create-qr-dialog";
 import { columns } from "@/components/dashboard/links/columns";
-import { CreateQRDialog } from "@/components/dashboard/links/createQRDialog";
 import { LinksTable } from "@/components/dashboard/links/data-table";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 
 export default function LinksPage() {
   return (
@@ -14,7 +11,7 @@ export default function LinksPage() {
             <h1 className="text-4xl font-bitcount text-foreground mb-1">QR Codes</h1>
             <p className="text-muted-foreground">Manage and track all your QR codes</p>
           </div>
-         <CreateQRDialog />
+          <CreateQRDialog />
         </div>
       </div>
       <div className="space-y-6">
